@@ -132,20 +132,52 @@ def ip_lookup(ip):
     print(f"Region: {ip_info.get('region', 'N/A')}")
     print(f"Country: {ip_info.get('country', 'N/A')}")
     print(f"Organization: {ip_info.get('org', 'N/A')}")
-    print(f"IP: {ip_info.get('ip', 'N/A')}")
+    ip_fang = defangip(ip_info.get('ip', 'N/A'))
+    print(f"IP: {ip_fang}")
     return ip_info
 
 # Defang data for safer use
 def defangip(ip):
     return ip.replace('.','[.]')
-def defangip(url):
+def defangurl(url):
     url.replace('.','[.]')
     url.replace('https://','hxxps[://]')
 
 def main(file_path):
     email_message = read_file(file_path)
     ips = get_ip(email_message)
-    print(ips)
+    urls = get_url(email_message)
+    attachments = get_attachment(email_message)
+    headers = get_header(email_message)
+
+    print("Get ips from email_message") 
+    print("#############")
+
+    for ip in ips:
+        ipinfo(ips)
+        
+    print("\nGet urls from email_message") 
+    print("#############")
+
+    for url in urls:
+        print(defangurl(url))
+    
+    print("\nGet headers from email_message") 
+    print("#############")
+
+    for key, value in headers.items():
+        print(f"{key}: {value}")
+
+    print("\nGet attachments from email_message") 
+    print("#############")
+
+    for attachment in attachments:
+        print(f"Filename: {attachment['filename']}")
+        print(f"md5_hash: {attachment['md5']}")
+        print(f"sha1_hash: {attachment['sha1']}")
+        print(f"sha256_hash: {attachment['sha256']}")
+        
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
